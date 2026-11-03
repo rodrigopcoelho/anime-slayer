@@ -1,0 +1,148 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Outfit Variable', 'Hiragino Sans', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Dela Gothic One', 'Hiragino Sans', 'Noto Sans JP', ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand palette, named after Japanese motifs */
+  --color-yuzu: #f5ffc6; /* Cream */
+  --color-sora: #b4e1ff; /* Icy Blue */
+  --color-fuji: #ab87ff; /* Soft Periwinkle (wisteria) */
+  --color-sakura: #fface4; /* Blush Pop */
+  --color-matcha: #c1ff9b; /* Light Green */
+
+  /* Night neutrals, tinted toward fuji */
+  --color-night-950: #0b0912;
+  --color-night-900: #110e1a;
+  --color-night-850: #161222;
+  --color-night-800: #1c1729;
+  --color-night-700: #2a2339;
+  --color-night-600: #3b3350;
+  --color-night-400: #8a83a3;
+  --color-night-300: #b3adc7;
+  --color-night-100: #eeebf6;
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-hero-progress: hero-progress var(--hero-interval, 8s) linear forwards;
+
+  @keyframes shimmer {
+    from {
+      background-position: 150% 0;
+    }
+    to {
+      background-position: -50% 0;
+    }
+  }
+
+  @keyframes hero-progress {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* Side padding that also centers content on very wide screens, while rows still bleed to the edge */
+    --gutter: max(1rem, calc((100vw - 1536px) / 2));
+
+    @media (width >= 40rem) {
+      --gutter: max(2rem, calc((100vw - 1536px) / 2));
+    }
+  }
+
+  html {
+    background-color: var(--color-night-950);
+    -webkit-tap-highlight-color: transparent;
+
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-night-950);
+    color: var(--color-night-100);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-sakura);
+    color: var(--color-night-950);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Soft pastel glows + film grain behind everything */
+@utility atmosphere {
+  position: relative;
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &::before {
+    background:
+      radial-gradient(55rem 38rem at 0% 30%, color-mix(in oklab, var(--color-fuji) 12%, transparent), transparent 65%),
+      radial-gradient(45rem 32rem at 100% 70%, color-mix(in oklab, var(--color-sakura) 8%, transparent), transparent 65%),
+      radial-gradient(60rem 30rem at 50% 115%, color-mix(in oklab, var(--color-sora) 9%, transparent), transparent 65%);
+  }
+
+  &::after {
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility writing-vertical {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* Outlined display type, like an anime title card */
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in oklab, var(--color-yuzu) 40%, transparent);
+}
+
+@utility skeleton {
+  background-color: var(--color-night-800);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    color-mix(in oklab, var(--color-fuji) 10%, transparent) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
